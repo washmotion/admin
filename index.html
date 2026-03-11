@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Gestión - Wash Motion</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --azul: #0057FF;
+    --azul-dark: #0040CC;
+    --negro: #0A0A0A;
+    --blanco: #FFFFFF;
+    --acento: #00E5FF;
+    --bg-card: rgba(255,255,255,0.035);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--negro);
+    color: var(--blanco);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── FONDO GLOBAL (Igual a tu landing) ── */
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .bg-glow {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,87,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -2;
+  }
+
+  /* ── PANTALLA DE LOGIN ── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  h1.brand-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 12vw, 120px);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+
+  h1.brand-title span {
+    color: var(--azul);
+    display: block;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+    margin-bottom: 32px;
+  }
+
+  .login-box {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 32px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 340px;
+    backdrop-filter: blur(10px);
+  }
+
+  input[type="password"] {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--blanco);
+    padding: 16px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 16px;
+    outline: none;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  input[type="password"]:focus {
+    border-color: var(--azul);
+    box-shadow: 0 0 15px rgba(0,87,255,0.2);
+  }
+
+  /* ── BOTONES ESTILO WASH MOTION ── */
+  .btn-primary {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background: var(--azul);
+    color: var(--blanco);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 32px;
+    border-radius: 100px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,87,255,0.2);
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+    border-radius: inherit;
+  }
+
+  .btn-primary:hover {
+    background: var(--azul-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(0,87,255,0.4);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    box-shadow: none;
+  }
+  
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.4);
+    color: var(--blanco);
+    transform: translateY(-2px);
+  }
+
+  .btn-active {
+    background: var(--acento);
+    color: var(--negro);
+    border-color: var(--acento);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+  }
+  .btn-active:hover {
+    background: #00b8cc;
+  }
+
+  #error-msg {
+    color: #ff4444;
+    font-size: 14px;
+    display: none;
+    margin-top: -8px;
+  }
+
+  /* ── DASHBOARD PRINCIPAL ── */
+  #dashboard {
+    display: none;
+    padding: 32px 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  /* Ocultar dashboard inicialmente por CSS (sobreescribe el flex de arriba temporalmente) */
+  .hidden { display: none !important; }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .header-title h2 {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .header-title span {
+    color: var(--azul);
+    font-weight: 700;
+  }
+
+  .nav-buttons {
+    display: flex;
+    gap: 16px;
+  }
+
+  .iframe-container {
+    flex-grow: 1;
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    position: absolute;
+    inset: 0;
+  }
+
+  /* ── ANIMACIONES ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    header { flex-direction: column; align-items: flex-start; }
+    .nav-buttons { width: 100%; }
+    .nav-buttons button { flex: 1; padding: 12px; font-size: 14px; }
+    #dashboard { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+
+<div id="login-screen">
+  <h1 class="brand-title">
+    Wash
+    <span>Motion</span>
+  </h1>
+  <p class="subtitle">Acceso exclusivo para administradores</p>
+  
+  <div class="login-box">
+    <input type="password" id="pass-input" placeholder="Ingresá tu contraseña" onkeypress="handleEnter(event)">
+    <p id="error-msg">Contraseña incorrecta</p>
+    <button class="btn-primary" onclick="checkPass()">Ingresar al Sistema</button>
+  </div>
+</div>
+
+<div id="dashboard" class="hidden">
+  <header>
+    <div class="header-title">
+      <h2>Sistema de Gestión - <span>Wash Motion</span></h2>
+    </div>
+    <div class="nav-buttons">
+      <button id="btn-control" class="btn-primary btn-active" onclick="switchView('control')">
+        🛠 Control
+      </button>
+      <button id="btn-stats" class="btn-primary btn-secondary" onclick="switchView('stats')">
+        📊 Estadísticas
+      </button>
+    </div>
+  </header>
+
+  <div class="iframe-container">
+    <iframe id="iframe-control" 
+            src="https://www.appsheet.com/start/f485a1e0-0216-438c-baea-ae4a8f492d79" 
+            style="display: block;">
+    </iframe>
+
+    <iframe id="iframe-stats" 
+            src="https://lookerstudio.google.com/embed/reporting/76d709e7-fde8-4096-8e22-f4a437dcbd0c/page/K1lrF" 
+            style="display: none;">
+    </iframe>
+  </div>
+</div>
+
+<script>
+  // ── SISTEMA BÁSICO DE CONTRASEÑA ──
+  // Cambiá 'admin123' por la contraseña que prefieras.
+  const PASSWORD_CORRECTA = "admin123";
+
+  function checkPass() {
+    const pass = document.getElementById('pass-input').value;
+    const errorMsg = document.getElementById('error-msg');
+    
+    if (pass === PASSWORD_CORRECTA) {
+      // Si la contraseña es correcta, ocultar login y mostrar dashboard
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').classList.remove('hidden');
+    } else {
+      // Si es incorrecta, mostrar error y limpiar input
+      errorMsg.style.display = 'block';
+      document.getElementById('pass-input').value = '';
+      
+      // Animación de temblor (opcional)
+      const box = document.querySelector('.login-box');
+      box.style.transform = 'translateX(10px)';
+      setTimeout(() => box.style.transform = 'translateX(-10px)', 50);
+      setTimeout(() => box.style.transform = 'translateX(0)', 100);
+    }
+  }
+
+  // Permitir ingresar apretando "Enter"
+  function handleEnter(e) {
+    if (e.key === 'Enter') {
+      checkPass();
+    }
+  }
+
+  // ── NAVEGACIÓN ENTRE APPSHEET Y LOOKER ──
+  function switchView(view) {
+    const frameControl = document.getElementById('iframe-control');
+    const frameStats = document.getElementById('iframe-stats');
+    const btnControl = document.getElementById('btn-control');
+    const btnStats = document.getElementById('btn-stats');
+
+    if (view === 'control') {
+      // Mostrar Control
+      frameControl.style.display = 'block';
+      frameStats.style.display = 'none';
+      
+      // Cambiar estilos de botones
+      btnControl.classList.add('btn-active');
+      btnControl.classList.remove('btn-secondary');
+      
+      btnStats.classList.remove('btn-active');
+      btnStats.classList.add('btn-secondary');
+    } else {
+      // Mostrar Estadísticas
+      frameControl.style.display = 'none';
+      frameStats.style.display = 'block';
+      
+      // Cambiar estilos de botones
+      btnStats.classList.add('btn-active');
+      btnStats.classList.remove('btn-secondary');
+      
+      btnControl.classList.remove('btn-active');
+      btnControl.classList.add('btn-secondary');
+    }
+  }
+</script>
+
+</body>
+</html>
