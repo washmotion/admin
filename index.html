@@ -3,17 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema de Gestión - Wash Motion</title>
+<title>AdminWash — Wash Motion</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --azul: #0057FF;
-    --azul-dark: #0040CC;
-    --negro: #0A0A0A;
-    --blanco: #FFFFFF;
-    --acento: #00E5FF;
+    --azul: #0057FF; --azul-dark: #0040CC;
+    --negro: #0A0A0A; --blanco: #FFFFFF; --acento: #00E5FF;
     --bg-card: rgba(255,255,255,0.035);
   }
 
@@ -25,27 +22,10 @@
     min-height: 100vh;
   }
 
-  /* ── FONDO GLOBAL (Igual a tu landing) ── */
-  .bg-grid {
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: -1;
-  }
-  
-  .bg-glow {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,87,255,0.15) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: -2;
-  }
+  .bg-grid { position:fixed; inset:0; background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px); background-size:40px 40px; pointer-events:none; z-index:-1; }
+  .bg-glow { position:fixed; inset:0; background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,87,255,0.15) 0%,transparent 70%); pointer-events:none; z-index:-2; }
 
-  /* ── PANTALLA DE LOGIN ── */
+  /* ── LOGIN ── */
   #login-screen {
     min-height: 100vh;
     display: flex;
@@ -57,25 +37,14 @@
     animation: fadeDown 0.6s ease both;
   }
 
-  h1.brand-title {
+  .brand-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(60px, 12vw, 120px);
+    font-size: 80px;
     line-height: 0.88;
-    letter-spacing: -0.01em;
     margin-bottom: 8px;
   }
 
-  h1.brand-title span {
-    color: var(--azul);
-    display: block;
-  }
-
-  .subtitle {
-    font-size: 16px;
-    color: rgba(255,255,255,0.45);
-    font-weight: 300;
-    margin-bottom: 32px;
-  }
+  .brand-title span { color: var(--azul); }
 
   .login-box {
     background: var(--bg-card);
@@ -88,9 +57,10 @@
     width: 100%;
     max-width: 340px;
     backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
   }
 
-  input[type="password"] {
+  input {
     background: rgba(0,0,0,0.5);
     border: 1px solid rgba(255,255,255,0.1);
     color: var(--blanco);
@@ -103,21 +73,22 @@
     transition: all 0.2s;
   }
 
-  input[type="password"]:focus {
+  input:focus {
     border-color: var(--azul);
     box-shadow: 0 0 15px rgba(0,87,255,0.2);
+    background: rgba(0,0,0,0.7);
   }
 
-  /* ── BOTONES ESTILO WASH MOTION ── */
   .btn-primary {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     background: var(--azul);
     color: var(--blanco);
     border: none;
     cursor: pointer;
+    font-family: inherit;
     font-size: 16px;
     font-weight: 700;
     padding: 16px 32px;
@@ -128,92 +99,93 @@
     box-shadow: 0 0 20px rgba(0,87,255,0.2);
   }
 
-  .btn-primary::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
-    border-radius: inherit;
-  }
+  .btn-primary::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent); border-radius:inherit; }
 
-  .btn-primary:hover {
-    background: var(--azul-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(0,87,255,0.4);
-  }
+  .btn-primary:hover { background:var(--azul-dark); transform:translateY(-2px); box-shadow:0 0 30px rgba(0,87,255,0.4); }
+  .btn-primary:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
 
-  .btn-secondary {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.7);
-    box-shadow: none;
-  }
-  
-  .btn-secondary:hover {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.4);
-    color: var(--blanco);
-    transform: translateY(-2px);
-  }
+  #error-msg { color:#ff4444; font-size:14px; min-height:18px; font-weight:500; }
 
-  .btn-active {
-    background: var(--acento);
-    color: var(--negro);
-    border-color: var(--acento);
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
-  }
-  .btn-active:hover {
-    background: #00b8cc;
-  }
-
-  #error-msg {
-    color: #ff4444;
-    font-size: 14px;
-    display: none;
-    margin-top: -8px;
-  }
-
-  /* ── DASHBOARD PRINCIPAL ── */
+  /* ── DASHBOARD ── */
   #dashboard {
     display: none;
-    padding: 32px 24px;
+    flex-direction: column;
+    padding: 24px;
+    height: 100vh;
     max-width: 1400px;
     margin: 0 auto;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
     animation: fadeDown 0.6s ease both;
   }
 
-  /* Ocultar dashboard inicialmente por CSS (sobreescribe el flex de arriba temporalmente) */
-  .hidden { display: none !important; }
+  #dashboard.visible { display: flex; }
 
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 12px;
+    flex-shrink: 0;
   }
 
-  .header-title h2 {
-    font-size: 24px;
-    font-weight: 500;
+  .header-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.02em;
   }
 
-  .header-title span {
-    color: var(--azul);
-    font-weight: 700;
+  .header-brand span { color: var(--azul); }
+
+  .header-user {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
   }
 
-  .nav-buttons {
-    display: flex;
-    gap: 16px;
+  .nav-buttons { display:flex; gap:10px; }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.55);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
 
-  .iframe-container {
-    flex-grow: 1;
+  .nav-btn:hover { background:rgba(255,255,255,0.09); color:var(--blanco); border-color:rgba(255,255,255,0.25); }
+
+  .nav-btn.active {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: var(--blanco);
+    box-shadow: 0 0 20px rgba(0,87,255,0.35);
+  }
+
+  .btn-logout {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.35);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-logout:hover { border-color:rgba(255,100,100,0.5); color:#ff6666; }
+
+  .iframe-wrap {
+    flex: 1;
     background: var(--bg-card);
     border: 1px solid rgba(255,255,255,0.07);
     border-radius: 20px;
@@ -221,26 +193,21 @@
     position: relative;
   }
 
-  iframe {
+  .iframe-wrap iframe {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     border: none;
-    position: absolute;
-    inset: 0;
   }
 
-  /* ── ANIMACIONES ── */
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
 
-  /* ── MOBILE ── */
-  @media (max-width: 768px) {
-    header { flex-direction: column; align-items: flex-start; }
-    .nav-buttons { width: 100%; }
-    .nav-buttons button { flex: 1; padding: 12px; font-size: 14px; }
-    #dashboard { padding: 16px; }
+  @media (max-width:768px) {
+    header { flex-direction:column; align-items:flex-start; }
+    .nav-buttons { width:100%; }
+    .nav-btn { flex:1; justify-content:center; font-size:13px; }
+    #dashboard { padding:16px; }
   }
 </style>
 </head>
@@ -249,112 +216,162 @@
 <div class="bg-glow"></div>
 <div class="bg-grid"></div>
 
+<!-- LOGIN -->
 <div id="login-screen">
-  <h1 class="brand-title">
-    Wash
-    <span>Motion</span>
-  </h1>
-  <p class="subtitle">Acceso exclusivo para administradores</p>
-  
+  <h1 class="brand-title">ADMIN<span>WASH</span></h1>
+  <p style="color:rgba(255,255,255,0.4);margin-bottom:28px;font-weight:300;font-size:15px;">
+    Panel exclusivo para administradores
+  </p>
   <div class="login-box">
-    <input type="password" id="pass-input" placeholder="Ingresá tu contraseña" onkeypress="handleEnter(event)">
-    <p id="error-msg">Contraseña incorrecta</p>
-    <button class="btn-primary" onclick="checkPass()">Ingresar al Sistema</button>
+    <input type="email" id="email" placeholder="Email de administrador" onkeypress="handleEnter(event)">
+    <input type="password" id="pass" placeholder="Contraseña" onkeypress="handleEnter(event)">
+    <p id="error-msg"></p>
+    <button class="btn-primary" id="btn-login" onclick="login()">
+      Ingresar al sistema
+    </button>
   </div>
 </div>
 
-<div id="dashboard" class="hidden">
+<!-- DASHBOARD -->
+<div id="dashboard">
   <header>
-    <div class="header-title">
-      <h2>Sistema de Gestión - <span>Wash Motion</span></h2>
+    <div>
+      <div class="header-brand">ADMIN<span>WASH</span></div>
+      <div class="header-user" id="header-user">—</div>
     </div>
     <div class="nav-buttons">
-      <button id="btn-control" class="btn-primary btn-active" onclick="switchView('control')">
-        🛠 Control
-      </button>
-      <button id="btn-stats" class="btn-primary btn-secondary" onclick="switchView('stats')">
-        📊 Estadísticas
-      </button>
+      <button class="nav-btn active" id="btn-control" onclick="switchView('control')">🛠 Control</button>
+      <button class="nav-btn" id="btn-stats" onclick="switchView('stats')">📊 Estadísticas</button>
+      <button class="btn-logout" onclick="logout()">Salir</button>
     </div>
   </header>
 
-  <div class="iframe-container">
-    <iframe id="iframe-control" 
-            src="https://www.appsheet.com/start/f485a1e0-0216-438c-baea-ae4a8f492d79" 
-            style="display: block;">
-    </iframe>
-
-    <iframe id="iframe-stats" 
-            src="https://lookerstudio.google.com/embed/reporting/76d709e7-fde8-4096-8e22-f4a437dcbd0c/page/K1lrF" 
-            style="display: none;">
-    </iframe>
+  <div class="iframe-wrap">
+    <iframe id="iframe-control" src="about:blank"></iframe>
+    <iframe id="iframe-stats"   src="about:blank" style="display:none"></iframe>
   </div>
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
 <script>
-  // ── SISTEMA BÁSICO DE CONTRASEÑA ──
-  // Cambiá 'admin123' por la contraseña que prefieras.
-  const PASSWORD_CORRECTA = "admin123";
+  // ── FIREBASE CONFIG (mismo proyecto que el portal de operadores) ──
+  const firebaseConfig = {
+    apiKey            : "AIzaSyAtCp9BVAxV-UOBUvadw2HJFT4xRK92rAI",
+    authDomain        : "wash-motion.firebaseapp.com",
+    projectId         : "wash-motion",
+    storageBucket     : "wash-motion.firebasestorage.app",
+    messagingSenderId : "G-6JDGHTPXQ1",
+    appId             : "1:556874047360:web:f027551e6510915f3dab65"
+  };
 
-  function checkPass() {
-    const pass = document.getElementById('pass-input').value;
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // ── BRIDGE URL (Apps Script — links nunca viajan en este HTML) ──
+  const BRIDGE_URL = 'https://script.google.com/macros/s/AKfycbyd0M5Y9Ao8A2AXPwobF4HS2xudzdFgZfkMFDCvYcEOj8iHxQhYTgSoZYo17iMzWNPb8g/exec';
+
+  // URLs en memoria — solo se llenan después de autenticación exitosa
+  let adminURLs = { control: '', stats: '' };
+
+  // ── LOGIN ──
+  async function login() {
+    const emailVal = document.getElementById('email').value.toLowerCase().trim();
+    const passVal  = document.getElementById('pass').value;
     const errorMsg = document.getElementById('error-msg');
-    
-    if (pass === PASSWORD_CORRECTA) {
-      // Si la contraseña es correcta, ocultar login y mostrar dashboard
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('dashboard').classList.remove('hidden');
-    } else {
-      // Si es incorrecta, mostrar error y limpiar input
-      errorMsg.style.display = 'block';
-      document.getElementById('pass-input').value = '';
-      
-      // Animación de temblor (opcional)
-      const box = document.querySelector('.login-box');
-      box.style.transform = 'translateX(10px)';
-      setTimeout(() => box.style.transform = 'translateX(-10px)', 50);
-      setTimeout(() => box.style.transform = 'translateX(0)', 100);
+    const btn      = document.getElementById('btn-login');
+
+    if (!emailVal || !passVal) { errorMsg.innerText = 'Completá todos los campos'; return; }
+
+    errorMsg.innerText = '';
+    btn.innerText      = 'Verificando...';
+    btn.disabled       = true;
+
+    try {
+      // 1. Autenticar con Firebase
+      const cred  = await auth.signInWithEmailAndPassword(emailVal, passVal);
+      const email = cred.user.email;
+
+      // 2. Pedir URLs al puente (nunca están en el HTML)
+      const res  = await fetch(`${BRIDGE_URL}?email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+
+      if (data.error || data.role !== 'admin') {
+        await auth.signOut();
+        errorMsg.innerText = data.role === 'operator'
+          ? 'Usá el portal de operadores.'
+          : 'Sin acceso de administrador.';
+        return;
+      }
+
+      // 3. Guardar URLs solo en memoria y mostrar dashboard
+      adminURLs = { control: data.control, stats: data.stats };
+      mostrarDashboard(email);
+
+    } catch (err) {
+      console.error(err.code);
+      errorMsg.innerText =
+        err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password'
+          ? 'Email o contraseña incorrectos.'
+          : 'Error de acceso. Reintentá.';
+    } finally {
+      btn.innerText = 'Ingresar al sistema';
+      btn.disabled  = false;
     }
   }
 
-  // Permitir ingresar apretando "Enter"
-  function handleEnter(e) {
-    if (e.key === 'Enter') {
-      checkPass();
-    }
+  // ── MOSTRAR DASHBOARD ──
+  function mostrarDashboard(email) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').classList.add('visible');
+    document.getElementById('header-user').textContent = email;
+
+    // Cargar iframe de control recién aquí — URL viene del puente, no del HTML
+    document.getElementById('iframe-control').src = adminURLs.control;
   }
 
-  // ── NAVEGACIÓN ENTRE APPSHEET Y LOOKER ──
+  // ── SWITCH DE VISTAS ──
   function switchView(view) {
-    const frameControl = document.getElementById('iframe-control');
-    const frameStats = document.getElementById('iframe-stats');
-    const btnControl = document.getElementById('btn-control');
-    const btnStats = document.getElementById('btn-stats');
+    const fcControl = document.getElementById('iframe-control');
+    const fcStats   = document.getElementById('iframe-stats');
+    const btnCtrl   = document.getElementById('btn-control');
+    const btnSts    = document.getElementById('btn-stats');
 
     if (view === 'control') {
-      // Mostrar Control
-      frameControl.style.display = 'block';
-      frameStats.style.display = 'none';
-      
-      // Cambiar estilos de botones
-      btnControl.classList.add('btn-active');
-      btnControl.classList.remove('btn-secondary');
-      
-      btnStats.classList.remove('btn-active');
-      btnStats.classList.add('btn-secondary');
+      fcControl.style.display = 'block';
+      fcStats.style.display   = 'none';
+      btnCtrl.classList.add('active');
+      btnSts.classList.remove('active');
     } else {
-      // Mostrar Estadísticas
-      frameControl.style.display = 'none';
-      frameStats.style.display = 'block';
-      
-      // Cambiar estilos de botones
-      btnStats.classList.add('btn-active');
-      btnStats.classList.remove('btn-secondary');
-      
-      btnControl.classList.remove('btn-active');
-      btnControl.classList.add('btn-secondary');
+      // Cargar stats solo la primera vez que se abre
+      if (fcStats.src === 'about:blank') {
+        fcStats.src = adminURLs.stats;
+      }
+      fcControl.style.display = 'none';
+      fcStats.style.display   = 'block';
+      btnSts.classList.add('active');
+      btnCtrl.classList.remove('active');
     }
   }
+
+  // ── LOGOUT ──
+  function logout() {
+    auth.signOut().then(() => {
+      // Limpiar URLs de memoria
+      adminURLs = { control: '', stats: '' };
+      document.getElementById('iframe-control').src = 'about:blank';
+      document.getElementById('iframe-stats').src   = 'about:blank';
+      document.getElementById('dashboard').classList.remove('visible');
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('email').value = '';
+      document.getElementById('pass').value  = '';
+      document.getElementById('error-msg').innerText = '';
+    });
+  }
+
+  function handleEnter(e) { if (e.key === 'Enter') login(); }
 </script>
 
 </body>
