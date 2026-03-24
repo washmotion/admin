@@ -184,6 +184,25 @@
 
   .btn-logout:hover { border-color:rgba(255,100,100,0.5); color:#ff6666; }
 
+  .btn-refresh {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.25);
+    color: var(--acento);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-refresh:hover { background:rgba(0,229,255,0.15); border-color:rgba(0,229,255,0.5); }
+  .btn-refresh.visible { display: inline-flex; }
+
   .iframe-wrap {
     flex: 1;
     background: var(--bg-card);
@@ -242,6 +261,7 @@
     <div class="nav-buttons">
       <button class="nav-btn active" id="btn-control" onclick="switchView('control')">🛠 Control</button>
       <button class="nav-btn" id="btn-stats" onclick="switchView('stats')">📊 Estadísticas</button>
+      <button class="btn-refresh" id="btn-refresh" onclick="refreshStats()">↻ Refrescar</button>
       <button class="btn-logout" onclick="logout()">Salir</button>
     </div>
   </header>
@@ -339,11 +359,14 @@
     const btnCtrl   = document.getElementById('btn-control');
     const btnSts    = document.getElementById('btn-stats');
 
+    const btnRefresh = document.getElementById('btn-refresh');
+
     if (view === 'control') {
       fcControl.style.display = 'block';
       fcStats.style.display   = 'none';
       btnCtrl.classList.add('active');
       btnSts.classList.remove('active');
+      btnRefresh.classList.remove('visible');
     } else {
       // Cargar stats solo la primera vez que se abre
       if (fcStats.src === 'about:blank') {
@@ -353,6 +376,7 @@
       fcStats.style.display   = 'block';
       btnSts.classList.add('active');
       btnCtrl.classList.remove('active');
+      btnRefresh.classList.add('visible');
     }
   }
 
@@ -369,6 +393,11 @@
       document.getElementById('pass').value  = '';
       document.getElementById('error-msg').innerText = '';
     });
+  }
+
+  // ── REFRESCAR STATS ──
+  function refreshStats() {
+    document.getElementById('iframe-stats').src = adminURLs.stats + '?t=' + Date.now();
   }
 
   function handleEnter(e) { if (e.key === 'Enter') login(); }
